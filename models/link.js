@@ -9,6 +9,14 @@ const link = mongoose.Schema({
     type: String,
     required: false, // not immediately required
   },
+  qr_preview: {
+    type: String,
+    required: true,
+  },
+  qr_download: {
+    type: String,
+    required: true,
+  },
   longlink: {
     type: String,
     required: true,
