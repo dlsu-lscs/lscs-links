@@ -5,7 +5,7 @@ const link = mongoose.Schema({
     type: String,
     required: true,
   },
-  tag: {
+  committee: {
     type: String,
     required: false, // not immediately required
   },
