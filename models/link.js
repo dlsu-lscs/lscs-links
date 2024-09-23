@@ -5,6 +5,10 @@ const link = mongoose.Schema({
     type: String,
     required: true,
   },
+  tag: {
+    type: String,
+    required: false, // not immediately required
+  },
   longlink: {
     type: String,
     required: true,

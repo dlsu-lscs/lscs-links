@@ -16,13 +16,6 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  orgs: [
-    {
-      org_id: mongoose.Schema.Types.ObjectId,
-      org_name: String,
-      permissions: [String]
-    }
-  ],
   created_at: String,
   last_login: String
 });
