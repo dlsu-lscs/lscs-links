@@ -8,8 +8,8 @@ router.post('/create', authenticateToken, async (req, res) => {
     const linkData = new linkModel({
       shortlink: req.body.shortlink,
       longlink: req.body.longlink,
-      qr_preview: `https://api.qrserver.com/v1/create-qr-code/?data=${req.url}&size=150x150&qzone=3`,
-      qr_download: `https://api.qrserver.com/v1/create-qr-code/?data=${req.url}&size=500x500&qzone=3`,
+      qr_preview: `https://api.qrserver.com/v1/create-qr-code/?data=https://lscs.info/${req.body.shortlink}?type=qr&size=150x150&qzone=3`,
+      qr_download: `https://api.qrserver.com/v1/create-qr-code/?data=https://lscs.info/${req.body.shortlink}?type=qr&size=500x500&qzone=3`,
       created_at: new Date(),
       created_by: req.user.email
     });
