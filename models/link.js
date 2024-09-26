@@ -3,6 +3,7 @@ const mongoose = require('../database');
 const link = mongoose.Schema({
   shortlink: {
     type: String,
+    unique: true,
     required: true,
   },
   committee: {
