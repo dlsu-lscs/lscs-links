@@ -33,7 +33,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, email: user.email }, // Payload
       process.env.JWT_SECRET,                  // Secret key (set in environment)
-      { expiresIn: '1h' }                      // Token expiration time
+      { expiresIn: '24h' }                      // Token expiration time
     );
 
     // Update last_login time
