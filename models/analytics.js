@@ -6,6 +6,6 @@ const analytics = mongoose.Schema({
   accessed_at: Date,
 });
 
-const analyticsModel = mongoose.model('analytics', analytics, process.env.DB_NAME);
+const analyticsModel = mongoose.model('analytics', analytics);
 
 module.exports = analyticsModel
