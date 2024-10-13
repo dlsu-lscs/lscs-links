@@ -20,6 +20,6 @@ const userSchema = mongoose.Schema({
   last_login: String
 });
 
-const userModel = mongoose.model('users', userSchema);
+const userModel = mongoose.model('users', userSchema, process.env.DB_NAME);
 
 module.exports = userModel
