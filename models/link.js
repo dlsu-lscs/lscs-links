@@ -32,6 +32,6 @@ const link = mongoose.Schema({
   },
 });
 
-const linkModel = mongoose.model('shortlinks', link, process.env.DB_NAME);
+const linkModel = mongoose.model('shortlinks', link);
 
 module.exports = linkModel
