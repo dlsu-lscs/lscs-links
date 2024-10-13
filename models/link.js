@@ -29,9 +29,9 @@ const link = mongoose.Schema({
   created_by: {
     type: String,
     required: true
-  }
+  },
 });
 
-const linkModel = mongoose.model('shortlinks', link);
+const linkModel = mongoose.model('shortlinks', link, process.env.DB_NAME);
 
 module.exports = linkModel
