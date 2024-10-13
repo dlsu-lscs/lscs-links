@@ -123,14 +123,23 @@ router.delete('/:id', async (req, res) => {
 router.post('/reset-password', async (req, res) => {
   try {
     const updates = req.body;
-    if (updates.password) {
+
+    if (updates.password == null || updates.password == undefined) {
+      return res.send({ status: 'error', message: 'No new password given.' });
+    }
+    else {
       updates.password = await bcrypt.hash(updates.password, 10);
     }
-    const user = await userModel.findByIdAndUpdate(req.params.id, updates, { new: true });
-    if (!user) {
-      return res.status(404).send({ status: 'error', error: 'User not found.' });
-    }
-    res.status(200).send({ status: 'success', user });
+    jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
+      if (err) return res.status(403).json({ status: 'error', message: 'Invalid token, access denied' });
+
+      const user_to_update = await userModel.findAndUpdate(user.email, { password: updates.password }, { new: true });
+      if (!user_to_update) {
+        return res.status(404).send({ status: 'error', error: 'User not found.' });
+      }
+      res.status(200).send({ status: 'success', message: 'Password changed successfully' });
+
+    });
   } catch (error) {
     res.status(500).send({ status: 'error', error: error.message });
   }
@@ -138,12 +147,13 @@ router.post('/reset-password', async (req, res) => {
 
 router.get('/request-reset', async (req, res) => {
   try {
-    const user = await userModel.findOne({ email }).exec();
+    const email = req.params.email;
+    const user = await userModel.findOne({ email: email }).exec();
+    console.log(user)
     if (!user) {
       console.log('invalid user');
       return;
     }
-    const email = req.query.email;
 
     const transporter = mailer.createTransport({
       service: 'gmail',
