@@ -88,6 +88,19 @@ router.put('/links/:id', authenticateToken, async (req, res) => {
       { new: true }
     );
 
+    if (updatedLink != undefined) {
+      linkModel.findOneAndUpdate(
+        { _id: req.params.id, created_by: userEmail }, // Ensure link belongs to user
+        {
+          shortlink: req.body.shortlink,
+          longlink: req.body.longlink,
+          created_at: req.body.created_at || new Date(),
+          qr_preview: `https://api.qrserver.com/v1/create-qr-code/?data=https://lscs.info/${updatedLink.shortlink}?type=qr&size=150x150&qzone=3`,
+          qr_download: `https://api.qrserver.com/v1/create-qr-code/?data=https://lscs.info/${updatedLink.shortlink}?type=qr&size=500x500&qzone=3`,
+        },
+        { new: true }
+      );
+    }
     if (!updatedLink) return res.status(404).json({ status: 'error', message: 'Link not found or unauthorized' });
     res.send({ status: 'ok', message: updatedLink });
   } catch (err) {
