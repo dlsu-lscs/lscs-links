@@ -49,7 +49,7 @@ router.get('/links', authenticateToken, async (req, res) => {
       total: totalLinks,
       page: pageNumber,
       totalPages: Math.ceil(totalLinks / limitNumber),
-      data: links,
+      data: links.reverse(),
     });
 
   } catch (err) {
