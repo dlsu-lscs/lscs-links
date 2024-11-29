@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Expecting "Bearer <token>"
 
@@ -8,12 +8,30 @@ const auth = (req, res, next) => {
     return res.status(401).json({ status: 'error', message: 'Token not found, authentication failed' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ status: 'error', message: 'Invalid token, access denied' });
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+      // Or, if multiple clients access the backend:
+      //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+    });
+    const payload = ticket.getPayload();
+    const userid = payload['sub'];
+    // If the request specified a Google Workspace domain:
+    // const domain = payload['hd'];
+    console.log(payload)
+  }
+  catch (e) {
+    console.error('CRITICAL auth middleware error', e);
+  }
+  // NOTE: deprecated for google auth
 
-    req.user = user; // Save the user info for the next middleware
-    next();
-  });
+  // jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  //   if (err) return res.status(403).json({ status: 'error', message: 'Invalid token, access denied' });
+  //
+  //   req.user = user; // Save the user info for the next middleware
+  //   next();
+  // });
 }
 
 module.exports = auth
