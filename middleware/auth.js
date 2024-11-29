@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client();
 
 const auth = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
