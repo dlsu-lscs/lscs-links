@@ -18,6 +18,7 @@ const auth = async (req, res, next) => {
       // Or, if multiple clients access the backend:
       //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
     });
+    console.log("passed here")
     const payload = ticket.getPayload();
     const userid = payload['sub'];
     // If the request specified a Google Workspace domain:
