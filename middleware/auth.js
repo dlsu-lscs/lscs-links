@@ -3,8 +3,8 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client();
 
 const auth = async (req, res, next) => {
-  // const authHeader = req.headers['authorization'];
-  // const token = authHeader && authHeader.split(' ')[1]; // Expecting "Bearer <token>"
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Expecting "Bearer <token>"
   //
   // if (!token) {
   //   return res.status(401).json({ status: 'error', message: 'Token not found, authentication failed' });
