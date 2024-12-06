@@ -1,58 +1,60 @@
-// const express = require('express');
-// const jwt = require('jsonwebtoken');
+const express = require('express');
+const jwt = require('jsonwebtoken');
 // const bcrypt = require('bcrypt');
-// const router = express.Router();
-// const userModel = require('../models/user');
-// const userAuthMiddleware = require('../middleware/auth');
-// const userAuth = userAuthMiddleware;
+const router = express.Router();
+const userModel = require('../models/user');
+const userAuthMiddleware = require('../middleware/auth');
+const userAuth = userAuthMiddleware;
+const axios = require('axios');
 
 // NOTE:- Deprecated for LSCS Auth.
 
 // // Create User
 //
-// router.post('/login', async (req, res) => {
-//   const { email, password } = req.body;
-//
-//   // Check if email and password are provided
-//   if (!email || !password) {
-//     return res.status(400).send({ status: 'error', error: 'Email and password are required.' });
-//   }
-//
-//   try {
-//     // Find the user by email
-//     const user = await userModel.findOne({ email }).exec();
-//     if (!user) {
-//       return res.status(400).send({ status: 'error', error: 'User not found.' });
-//     }
-//
-//     // Check if the password matches
-//     const passwordMatch = await bcrypt.compare(password, user.password);
-//     if (!passwordMatch) {
-//       return res.status(400).send({ status: 'error', error: 'Incorrect password.' });
-//     }
-//
-//     // Generate JWT token
-//     const token = jwt.sign(
-//       { userId: user._id, email: user.email }, // Payload
-//       process.env.JWT_SECRET,                  // Secret key (set in environment)
-//       { expiresIn: '12h' }                      // Token expiration time
-//     );
-//
-//     // Update last_login time
-//     user.last_login = new Date().toISOString();
-//     await user.save();
-//
-//     // Send the token to the client
-//     res.status(200).send({
-//       status: 'success',
-//       token,
-//       user: { id: user._id, email: user.email, name: user.name },
-//     });
-//   } catch (error) {
-//     res.status(500).send({ status: 'error', error: error.message });
-//   }
-// });
-//
+router.post('/login', async (req, res) => {
+  const { token } = req.body;
+
+  // Check if email and password are provided
+  if (!token) {
+    return res.status(400).send({ status: 'error', error: 'Google access token required.' });
+  }
+
+  try {
+
+    // TODO: LSCS member validation
+    // TODO: token refresh
+
+    // NOTE: validates google login only, dlsu email and lscs member verification is handled in the frontend
+    // TODO: handle dlsu member validation backend
+    //
+    // TODO: verify access token, check error, if good, generate server-end JWT token, give to frontend, ..-
+    // TODO: -.. use that as header token for the endpoints
+    const response = await axios.post(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`);
+
+    if (response.error != undefined || response.error != null) {
+      return res.status(400).send({ status: 'error', error: 'Invalid google access token' });
+    }
+
+    // Generate JWT token
+    const jwt_token = jwt.sign(
+      response, // Payload
+      process.env.JWT_SECRET,                  // Secret key (set in environment)
+    );
+
+    // Update last_login time
+    user.last_login = new Date().toISOString();
+    await user.save();
+
+    // Send the token to the client
+    res.status(200).send({
+      status: 'success',
+      jwt_token,
+    });
+  } catch (error) {
+    res.status(500).send({ status: 'error', error: error.message });
+  }
+});
+
 // router.post('/register', async (req, res) => {
 //   try {
 //     const { email, name, password, orgs } = req.body;
