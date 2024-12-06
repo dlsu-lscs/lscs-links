@@ -45,6 +45,8 @@ router.post('/login', async (req, res) => {
     user.last_login = new Date().toISOString();
     await user.save();
 
+
+    console.log('success', jwt_token)
     // Send the token to the client
     res.status(200).send({
       status: 'success',
