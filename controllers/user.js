@@ -13,7 +13,7 @@ const axios = require('axios');
 //
 router.post('/login', async (req, res) => {
   const { token } = req.body;
-
+  console.log('called')
   // Check if email and password are provided
   if (!token) {
     return res.status(400).send({ status: 'error', error: 'Google access token required.' });
