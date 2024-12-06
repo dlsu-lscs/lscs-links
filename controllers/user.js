@@ -43,8 +43,8 @@ router.post('/login', async (req, res) => {
     );
 
     // Update last_login time
-    user.last_login = new Date().toISOString();
-    await user.save();
+    // user.last_login = new Date().toISOString();
+    // await user.save();
 
 
     console.log('success', jwt_token)
