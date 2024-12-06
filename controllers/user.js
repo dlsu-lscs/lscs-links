@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
     // TODO: verify access token, check error, if good, generate server-end JWT token, give to frontend, ..-
     // TODO: -.. use that as header token for the endpoints
     const response = await axios.post(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`);
-    console.log('passed response:', response)
+    console.log('passed response:', response.data)
 
     if (response.error != undefined || response.error != null) {
       return res.status(400).send({ status: 'error', error: 'Invalid google access token' });
@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     const jwt_token = jwt.sign(
-      response, // Payload
+      response.data, // Payload
       process.env.JWT_SECRET,                  // Secret key (set in environment)
     );
 
