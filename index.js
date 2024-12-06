@@ -13,7 +13,7 @@ app.use('/', require('./controllers/link'))
 app.use('/admin', require('./controllers/admin'))
 
 // NOTE: deprecated for google login
-// app.use('/auth', require('./controllers/user'))
+app.use('/auth', require('./controllers/user'))
 
 app.use('/analytics', require('./controllers/analytics'))
 
