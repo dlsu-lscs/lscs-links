@@ -29,9 +29,12 @@ router.get('/links', authenticateToken, async (req, res) => {
 
     let query = { created_by: userEmail }; // Filter by the user's email
 
-    if (committee) {
-      query.committee = committee;
-    }
+    // TODO: USAGE: ?committee=TND,MEM,RND
+    // if (committee) {
+    //   query.committee = committee.split(',');
+    // } else {
+    //   query.committee = [req.user.committee];
+    // }
 
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
@@ -42,8 +45,8 @@ router.get('/links', authenticateToken, async (req, res) => {
       .skip(skip)
       .limit(limitNumber);
 
+    // const totalLinks = await linkModel.countDocuments({ committee: { $in: query.committee } });
     const totalLinks = await linkModel.countDocuments(query);
-
     res.send({
       status: 'ok',
       total: totalLinks,
