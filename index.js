@@ -11,7 +11,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/', require('./controllers/link'))
 app.use('/admin', require('./controllers/admin'))
+
+// NOTE: deprecated for google login
 app.use('/auth', require('./controllers/user'))
+
 app.use('/analytics', require('./controllers/analytics'))
 
 app.listen(process.env.PORT || 3000, () => {
