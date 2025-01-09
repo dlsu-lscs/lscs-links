@@ -31,8 +31,9 @@ router.post('/login', async (req, res) => {
     // TODO: -.. use that as header token for the endpoints
 
     const response = await axios.get('https://www.googleapis.com/oauth2/v1/tokeninfo', {
-      params: { access_token: accessToken },
+      params: { access_token: token },
     });
+
     console.log('passed response:', response.data)
 
     if (response.error != undefined || response.error != null) {
