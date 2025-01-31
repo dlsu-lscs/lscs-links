@@ -50,10 +50,23 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET,                  // Secret key (set in environment)
     );
 
+    const lscs = await axios.post(
+      'https://auth.app.dlsu-lscs.org/check-email',
+      `{ "email": ${response.data.email} }`, // Pass the ID in the request body
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.LSCS_API_KEY}`, // Use the API key from the environment variables
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (lscs.data.state == "absent")
+      return res.status(400).send({ status: 'error', error: "Not an LSCS member" })
+
     // Update last_login time
     // user.last_login = new Date().toISOString();
     // await user.save();
-
 
     console.log('success', jwt_token)
     // Send the token to the client
