@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
 
     const lscs = await axios.post(
       'https://auth.app.dlsu-lscs.org/member',
-      `{ "email": ${response.data.email} }`, // Pass the ID in the request body
+      `{ "email": "${response.data.email}" }`, // Pass the ID in the request body
       {
         headers: {
           Authorization: `Bearer ${process.env.LSCS_API_KEY}`, // Use the API key from the environment variables
