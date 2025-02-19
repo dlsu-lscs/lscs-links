@@ -1,6 +1,6 @@
-const mongoose = require('../database');
+import mongoose from 'mongoose';
 
-const link = mongoose.Schema({
+const linkSchema = new mongoose.Schema({
   shortlink: {
     type: String,
     unique: true,
@@ -24,14 +24,15 @@ const link = mongoose.Schema({
   },
   created_at: {
     type: Date,
-    required: true
+    required: true,
   },
   created_by: {
     type: String,
-    required: true
+    required: true,
   },
 });
 
-const linkModel = mongoose.model('shortlinks', link);
+const linkModel = mongoose.model('shortlinks', linkSchema);
 
-module.exports = linkModel
+export default linkModel;
+
