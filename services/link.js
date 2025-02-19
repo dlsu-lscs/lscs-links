@@ -1,9 +1,6 @@
-const router = require('express').Router();
-const linkModel = require('../models/link');
-const authenticateToken = require('../middleware/auth');
+import linkModel from '../models/link.js'
 
-// Create - POST a new short link
-router.post('/create', authenticateToken, async (req, res) => {
+const createLink = async (req, res) => {
   try {
     const linkData = new linkModel({
       shortlink: req.body.shortlink,
@@ -19,22 +16,14 @@ router.post('/create', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(400).send({ status: 'error', message: err.message });
   }
-});
+}
 
-// Read - GET all links
-router.get('/links', authenticateToken, async (req, res) => {
+const getLinks = async (req, res) => {
   try {
     const { committee, page = 1, limit = 10 } = req.query;
     const userEmail = req.user.email;
 
     let query = { created_by: userEmail }; // Filter by the user's email
-
-    // TODO: USAGE: ?committee=TND,MEM,RND
-    // if (committee) {
-    //   query.committee = committee.split(',');
-    // } else {
-    //   query.committee = [req.user.committee];
-    // }
 
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
@@ -45,7 +34,6 @@ router.get('/links', authenticateToken, async (req, res) => {
       .skip(skip)
       .limit(limitNumber);
 
-    // const totalLinks = await linkModel.countDocuments({ committee: { $in: query.committee } });
     const totalLinks = await linkModel.countDocuments(query);
     res.send({
       status: 'ok',
@@ -58,10 +46,11 @@ router.get('/links', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
-});
+}
 
 // Read - GET a single link by ID
-router.get('/link/:id', authenticateToken, async (req, res) => {
+
+const getLinkById = async (req, res) => {
   try {
     const userEmail = req.user.email;
     const link = await linkModel.findOne({ _id: req.params.id, created_by: userEmail });
@@ -70,14 +59,14 @@ router.get('/link/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ status: 'error', message: 'Link not found or unauthorized' });
     }
 
-    res.send({ status: 'ok', link: link });
+    res.send({ status: 'ok', link });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
-});
+};
 
 // Update - PUT to update a link by ID
-router.put('/links/:id', authenticateToken, async (req, res) => {
+const updateLink = async (req, res) => {
   try {
     const userEmail = req.user.email;
 
@@ -91,9 +80,9 @@ router.put('/links/:id', authenticateToken, async (req, res) => {
       { new: true }
     );
 
-    if (updatedLink != undefined) {
-      linkModel.findOneAndUpdate(
-        { _id: req.params.id, created_by: userEmail }, // Ensure link belongs to user
+    if (updatedLink) {
+      await linkModel.findOneAndUpdate(
+        { _id: req.params.id, created_by: userEmail },
         {
           shortlink: req.body.shortlink,
           longlink: req.body.longlink,
@@ -104,26 +93,52 @@ router.put('/links/:id', authenticateToken, async (req, res) => {
         { new: true }
       );
     }
-    if (!updatedLink) return res.status(404).json({ status: 'error', message: 'Link not found or unauthorized' });
+
+    if (!updatedLink) {
+      return res.status(404).json({ status: 'error', message: 'Link not found or unauthorized' });
+    }
+
     res.send({ status: 'ok', message: updatedLink });
   } catch (err) {
     res.status(400).json({ status: 'error', message: err.message });
   }
-});
+};
 
 // Delete - DELETE a link by ID
-router.delete('/links/:id', authenticateToken, async (req, res) => {
+
+const deleteLink = async (req, res) => {
   try {
     const userEmail = req.user.email;
 
     const deletedLink = await linkModel.findOneAndDelete({ _id: req.params.id, created_by: userEmail });
 
-    if (!deletedLink) return res.status(404).json({ status: 'error', message: 'Link not found or unauthorized' });
+    if (!deletedLink) {
+      return res.status(404).json({ status: 'error', message: 'Link not found or unauthorized' });
+    }
 
     res.send({ status: 'ok', message: 'Link deleted successfully' });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
-});
+};
 
-module.exports = router;
+const handleRedirect = async (req, res) => {
+  if (!req.params.shortlink) {
+    return res.send({ status: 'error', message: '[#1] Invalid link.' });
+  }
+
+  try {
+    const link = await linkModel.findOne({ shortlink: req.params.shortlink }).exec();
+
+    if (!link) {
+      return res.send({ status: 'error', message: '[#2] Invalid link.' }); // TODO: 404 page
+    }
+
+    analytics.onClick(req.path, req.query.type || 'link');
+    return res.redirect(link.longlink);
+  } catch (err) {
+    return res.send({ status: 'error', message: err.message }); // TODO: 404 page
+  }
+};
+
+export { createLink, getLinks, getLinkById, updateLink, deleteLink, handleRedirect };

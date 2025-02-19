@@ -1,11 +1,12 @@
-const mongoose = require('../database');
+import mongoose from 'mongoose';
 
-const analytics = mongoose.Schema({
+const analyticsSchema = new mongoose.Schema({
   link: String,
   type: String,
   accessed_at: Date,
 });
 
-const analyticsModel = mongoose.model('analytics', analytics);
+const analyticsModel = mongoose.model('analytics', analyticsSchema);
 
-module.exports = analyticsModel
+export default analyticsModel;
+
