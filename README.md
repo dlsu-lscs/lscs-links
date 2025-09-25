@@ -1,56 +1,163 @@
-# LSCS Links
 
-![LSCS | RND](https://img.shields.io/badge/LSCS-RND-brightgreen)
+# lscs-links
 
-## Overview
-
-This repository contains the **LSCS Links** system, a URL shortening service for the De La Salle University - Laguna Student Council Services (LSCS). It allows users to create, manage, and track short links with associated long URLs and additional metadata such as committee tags.
-
-### Key Features
-- **Link Shortening**: Convert long URLs into short, manageable links.
-- **Custom Metadata**: Add committee tags to links for easier categorization and filtering.
-- **Link Tracking**: Monitor the creation date and other useful data for each short link.
-
-### Mongoose Model Structure
-
-The core functionality is built around a Mongoose model (`linkModel`), which represents the structure of a link:
-- **Short Link**: A unique short version of the original URL.
-- **Long Link**: The original long-form URL.
-- **Committee**: A tag used for filtering links based on the relevant committee.
-- **Created At**: Timestamp to track when the link was created.
-
-### Setup and Installation
-
-1. Clone the repository:
-   ```bash
-     git clone https://github.com/dlsu-lscs/lscs-links.git
-   ```
-2. Install dependencies:
-   ```bash
-     npm install
-   ```
-3. Set up environment variables in a `.env` file:
-   ```env
-     MONGODB_URI=<your_mongodb_uri>
-     PORT=<your_preferred_port>
-   ```
-4. Start the server:
-   ```bash
-     npm start
-   ```
-
-### Contribution Guidelines
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -m 'Add new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a pull request.
-
-### License
-
-This project is licensed under the MIT License. See the 'LICENSE' file for more details.
+This project was bootstrapped with **create-lscs-next-app**.
 
 ---
 
-Maintained by La Salle Computer Society's Research and Development Committee.
+## 1. 🚀 Development Setup
+
+- Organized folder structure
+- Prettier + ESLint (with Prettier rules)
+- Placeholder feature folder structure (`[feature-name]`)
+- Global styles moved into `src/styles/globals.css`
+
+### Scripts
+
+- `npm run dev` → Start dev server
+- `npm run build` → Build production bundle
+- `npm run start` → Run production build
+- `npm run lint` → Run ESLint
+- `npm run test` → Run Vitest
+
+### 🧪 Testing Setup
+
+This scaffold comes with **Vitest** (unit testing) and **Cypress** (end-to-end testing) pre-configured.
+
+---
+
+## 2. ⚡ Creating a New Feature
+
+You can create a new feature module easily using the CLI command:
+
+```bash
+npx create-lscs-next-app feature <feature-name>
+```
+
+This will generate a new folder under `src/features/<feature-name>` with the following structure:
+
+- components/
+- containers/
+- hooks/
+- services/
+- queries/
+- types/
+- data/
+- README.md
+
+The generated README explains the purpose of each folder.
+
+---
+
+## 3. 🛠️ Tech Stack (Recommended)
+
+This scaffold does **not auto-install** feature libraries, so devs learn to set them up manually.  
+Recommended libraries for future installs:
+
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **UI/Styling**: [Tailwind CSS](https://tailwindcss.com/) + (optional: [shadcn/ui](https://ui.shadcn.com/))
+- **Data Fetching**: [TanStack Query](https://tanstack.com/query/latest)
+- **State Management**: [Zustand](https://zustand-bear.github.io/zustand/)
+- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Testing**: [Vitest](https://vitest.dev/) + [Cypress](https://www.cypress.io/)
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/)
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
+
+---
+
+## 4. 🏛️ Architecture
+
+We employ a **Feature-Driven Architecture** in Next.js, organizing code by domain features for scalability and collaboration.  
+Each feature starts from the `src/features/[feature-name]` template, which includes:
+
+- components/
+- containers/
+- hooks/
+- services/
+- queries/
+- types/
+- data/
+
+Inside features, we follow the **Container/Presentational pattern**.
+
+### File Structure
+
+```
+src/
+├── app/ # Next.js App Router
+│ ├── layout.tsx
+│ ├── page.tsx
+│ └── providers.tsx
+│
+├── components/ # Global shared UI components
+│
+├── features/ # Domain-specific feature modules
+│ ├── [feature-name]/ # Copy + rename this folder for new features
+│ │ ├── components/
+│ │ ├── containers/
+│ │ ├── hooks/
+│ │ ├── services/
+│ │ ├── queries/
+│ │ ├── types/
+│ │ └── data/
+│ └── shared/
+│
+├── lib/ # Utilities and global helpers
+├── queries/ # Global TanStack Query configs
+├── store/ # Zustand stores
+├── providers/ # Global providers (Auth, Theme, Query, etc.)
+├── config/ # Env, constants, query defaults
+├── styles/ # Global & theme styles
+├── types/ # Global TypeScript types
+└── tests/ # Unit + E2E tests
+```
+
+---
+
+## 5. 📝 Coding Standards
+
+- Use **functional React components** with hooks.
+- **Type everything** with TypeScript.
+- **Zustand** for client state, **TanStack Query** for server data.
+- Gracefully handle **loading & error states**.
+- Use **Prettier** + **ESLint** for formatting and linting.
+- Tests: **Vitest** for unit, **Cypress** for e2e.
+- Comments: explain _why_, not _what_.
+
+---
+
+## 6. 🤝 Code Contribution Guide
+
+### Branch Model
+
+- `main` → production only
+- `staging` → pre-release testing
+- `dev` → integration branch
+
+### Workflow
+
+1. Create a branch: `feature/<issue-no-desc>`, `fix/<issue-no-desc>`
+2. Commit using **Conventional Commits**:
+   - `feat(auth): add JWT authentication`
+   - `fix(api): correct null pointer`
+3. Open a PR → target `dev` (or `main` for hotfix).
+4. Get at least **1 approval** before merge.
+5. Use **Squash and Merge** into `dev`.
+
+### Commit Message Quick Reference
+
+| Type     | Description            |
+| -------- | ---------------------- |
+| feat     | New feature            |
+| fix      | Bug fix                |
+| docs     | Documentation change   |
+| style    | Code style (no logic)  |
+| refactor | Refactor (no behavior) |
+| test     | Add/update tests       |
+| chore    | Maintenance            |
+
+---
+
+✅ Following this guide ensures our projects remain **scalable, maintainable, and collaborative**.
