@@ -2,30 +2,41 @@
   "name": "lscs-links",
   "version": "1.0.0",
   "description": "A simple link shortener made for La Salle Computer Society (lscs.info)",
-  "homepage": "https://github.com/dlsu-lscs/lscs-links#readme",
-  "bugs": {
-    "url": "https://github.com/dlsu-lscs/lscs-links/issues"
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "lint": "eslint 'src/**/*.ts'",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dlsu-lscs/lscs-links.git"
   },
-  "license": "ISC",
+  "keywords": [],
   "author": "",
+  "license": "ISC",
   "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bugs": {
+    "url": "https://github.com/dlsu-lscs/lscs-links/issues"
   },
-  "dependencies": {
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "mongoose": "^8.18.2"
-  },
+  "homepage": "https://github.com/dlsu-lscs/lscs-links#readme",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
+    "dotenv": "^17.2.2",
+    "eslint": "^9.36.0",
+    "express": "^5.1.0",
+    "install": "^0.13.0",
+    "nodemon": "^3.1.10",
+    "npm": "^11.6.1",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
   }
 }
