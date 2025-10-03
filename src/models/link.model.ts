@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { ILink } from '../types/links.types';
+import { ILink } from '../types/models.types';
 
 const linkSchema: Schema<ILink> = new Schema({
   shortLink: { type: String, required: true, unique: true },
