@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import LinkModel from '../models/link.model';
 import analyticsMiddleware from '../middlewares/analytics.middleware';
 
