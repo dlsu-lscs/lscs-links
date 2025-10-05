@@ -21,3 +21,5 @@ const getShortLinksAnalytics = async (req: Request, res: Response) => {
       .json({ status: 'error', message: '[ERROR] Invalid Request' });
   }
 };
+
+export default getShortLinksAnalytics;
