@@ -1,10 +1,16 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
+interface MemberPayload extends JwtPayload {
+  email: String;
+  committee_id: String;
+  position_name: String;
+}
+
 // Extend Express Request type so `req.member` is allowed
 declare module 'express-serve-static-core' {
   interface Request {
-    member?: string | JwtPayload;
+    member?: MemberPayload;
   }
 }
 
@@ -25,7 +31,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
       throw new Error('JWT_SECRET not set in environment variables');
     }
 
-    const decoded = jwt.verify(token, secret);
+    const decoded = jwt.verify(token, secret) as MemberPayload;
     req.member = decoded; // Save decoded payload into req.member
     next();
   } catch (err) {
