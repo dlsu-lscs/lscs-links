@@ -3,7 +3,7 @@ import { ILink } from '../types/models.types';
 
 const linkSchema: Schema<ILink> = new Schema({
   shortLink: { type: String, required: true, unique: true },
-  committee: { type: String, required: true },
+  committee_id: { type: String, required: true },
   longLink: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
   created_by: { type: String, required: true },

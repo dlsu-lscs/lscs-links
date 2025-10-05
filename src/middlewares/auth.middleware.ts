@@ -1,11 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-
-interface MemberPayload extends JwtPayload {
-  email: String;
-  committee_id: String;
-  position_name: String;
-}
+import { MemberPayload } from '../types/models.types';
 
 // Extend Express Request type so `req.member` is allowed
 declare module 'express-serve-static-core' {
