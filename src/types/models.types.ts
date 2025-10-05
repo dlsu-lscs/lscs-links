@@ -1,4 +1,7 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, {
+  Document,
+  StringExpressionOperatorReturningBoolean,
+} from 'mongoose';
 
 export interface ILink extends Document {
   shortLink: string;
@@ -12,4 +15,10 @@ export interface IAnalytics extends Document {
   link: String;
   type: String;
   accessed_at: Date;
+}
+
+export interface AnalyticsType {
+  link: String;
+  type?: 'link' | String;
+  accessed_at?: Date;
 }

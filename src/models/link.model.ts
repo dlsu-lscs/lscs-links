@@ -9,6 +9,6 @@ const linkSchema: Schema<ILink> = new Schema({
   created_by: { type: String, required: true },
 });
 
-const link = mongoose.model<ILink>('Link', linkSchema);
+const linkModel = mongoose.model<ILink>('Link', linkSchema);
 
-export default link;
+export default linkModel;
