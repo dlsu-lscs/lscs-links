@@ -16,26 +16,26 @@ const createLink = async (req: Request, res: Response) => {
     }
 
     const {
-      shortLink,
-      longLink,
+      shortlink,
+      longlink,
       pinned = false,
       committee_id,
     } = req.body as {
-      shortLink: string;
-      longLink: string;
+      shortlink: string;
+      longlink: string;
       pinned?: boolean;
       committee_id?: string | null;
     };
 
     // Enforce Max Length
-    if (shortLink.length > 100) {
+    if (shortlink.length > 100) {
       return res.status(400).json({
         status: 'error',
         message: '[ERROR] Short link cannot exceed 100 characters',
       });
     }
 
-    if (longLink.length > 2500) {
+    if (longlink.length > 2500) {
       return res.status(400).json({
         status: 'error',
         message: '[ERROR] Long link cannot exceed 2500 characters',
@@ -83,8 +83,8 @@ const createLink = async (req: Request, res: Response) => {
     }
 
     const newLink = new linkModel({
-      shortLink,
-      longLink,
+      shortlink,
+      longlink,
       created_at: new Date(),
       created_by: member.email,
       committee_id: finalCommitteeId,
@@ -242,16 +242,16 @@ const updateLinkByID = async (req: Request, res: Response) => {
       });
     }
 
-    const { shortLink, longLink, pinned, committee_id } = req.body;
+    const { shortlink, longlink, pinned, committee_id } = req.body;
 
     // Enforce max length
-    if (shortLink && shortLink.length > 100) {
+    if (shortlink && shortlink.length > 100) {
       return res.status(400).json({
         status: 'error',
         message: '[ERROR] Short link cannot exceed 100 characters',
       });
     }
-    if (longLink && longLink.length > 2500) {
+    if (longlink && longlink.length > 2500) {
       return res.status(400).json({
         status: 'error',
         message: '[ERROR] Long link cannot exceed 2500 characters',
@@ -300,8 +300,8 @@ const updateLinkByID = async (req: Request, res: Response) => {
     }
 
     // Update fields
-    link.shortLink = shortLink || link.shortLink;
-    link.longLink = longLink || link.longLink;
+    link.shortlink = shortlink || link.shortlink;
+    link.longlink = longlink || link.longlink;
     link.pinned = pinned !== undefined ? pinned : link.pinned;
     link.committee_id = finalCommitteeId;
     link.created_at = req.body.created_at || link.created_at;

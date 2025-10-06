@@ -4,6 +4,6 @@ import linkController from '../controllers/link.controller';
 
 const router: Router = express.Router();
 
-router.get('/:shortLink', linkController.getShortLink);
+router.get('/:shortlink', linkController.getShortLink);
 
 export default router;

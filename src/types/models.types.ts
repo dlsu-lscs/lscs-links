@@ -7,9 +7,9 @@ import { JwtPayload } from 'jsonwebtoken';
 // LINK
 
 export interface ILink extends Document {
-  shortLink: string;
+  shortlink: string;
+  longlink: string;
   committee_id: string | null;
-  longLink: string;
   created_at: Date;
   created_by: string;
   pinned: boolean;
