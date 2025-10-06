@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import linkModel from '../models/link.model';
-import { canRead } from '../lib/permissions';
+import { canModify, canRead } from '../lib/permissions';
 import { MemberPayload } from '../types/models.types';
 
 //CREATE LINK (with RBAC and pinned links)
@@ -91,7 +91,7 @@ const createLink = async (req: Request, res: Response) => {
   }
 };
 
-//GET ALL LINKS (with pagination and RBAC and pinned sorting)
+//RAED ALL LINKS (with pagination and RBAC and pinned sorting)
 const getAllLinks = async (req: Request, res: Response) => {
   try {
     const member = req.member as MemberPayload;
@@ -150,7 +150,7 @@ const getAllLinks = async (req: Request, res: Response) => {
   }
 };
 
-//GET LINK BY ID (with RBAC)
+//READ LINK BY ID (with RBAC)
 const getLinkByID = async (req: Request, res: Response) => {
   try {
     const member = req.member as MemberPayload;
@@ -192,6 +192,48 @@ const getLinkByID = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('[ERROR] Get Link By ID:', error);
+    return res.status(500).json({
+      status: 'error',
+      message: `[ERROR] Internal Server Error - ${error instanceof Error ? error.message : error}`,
+    });
+  }
+};
+
+const deleteLinkByID = async (req: Request, res: Response) => {
+  try {
+    const member = req.member as MemberPayload;
+
+    if (!member) {
+      return res.status(401).json({
+        status: 'error',
+        message: '[ERROR] Unauthorized — no member found in request',
+      });
+    }
+
+    const link = await linkModel.findById(req.params.id);
+
+    if (!link) {
+      return res.status(404).json({
+        status: 'error',
+        message: '[ERROR] Link not found',
+      });
+    }
+
+    if (!canModify(member, link)) {
+      return res.status(403).json({
+        status: 'error',
+        message: '[ERROR] You do not have permission to delete this link',
+      });
+    }
+
+    await linkModel.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({
+      status: 'ok',
+      message: 'Link deleted successfully',
+    });
+  } catch (error) {
+    console.error('[ERROR] Delete Link:', error);
     return res.status(500).json({
       status: 'error',
       message: `[ERROR] Internal Server Error - ${error instanceof Error ? error.message : error}`,
