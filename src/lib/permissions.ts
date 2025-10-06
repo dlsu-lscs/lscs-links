@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export const canRead = (
   member: MemberPayload,
-  committee_id: String,
+  committee_id: string | null,
 ): boolean => {
   if (
     ['Executive Vice President', 'President'].includes(
@@ -17,7 +17,7 @@ export const canRead = (
 
 export const canModify = (
   member: MemberPayload,
-  link: Document & { created_by: string; committee_id: string },
+  link: Document & { created_by: string; committee_id: string | null },
 ): boolean => {
   const { position_name, email, committee_id } = member;
 

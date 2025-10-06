@@ -4,14 +4,17 @@ import mongoose, {
 } from 'mongoose';
 import { JwtPayload } from 'jsonwebtoken';
 
+// LINK
+
 export interface ILink extends Document {
   shortLink: string;
-  committee_id: string;
+  committee_id: string | null;
   longLink: string;
   created_at: Date;
   created_by: string;
 }
 
+// ANALYTICS
 export interface IAnalytics extends Document {
   link: String;
   type: String;
@@ -24,8 +27,9 @@ export interface AnalyticsType {
   accessed_at?: Date;
 }
 
+// MEMBER PAYLOAD
 export interface MemberPayload extends JwtPayload {
   email: string;
-  committee_id: string;
+  committee_id?: string | null;
   position_name: string;
 }

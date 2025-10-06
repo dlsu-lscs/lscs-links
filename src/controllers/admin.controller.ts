@@ -22,8 +22,14 @@ const getLinkByID = async (req: Request, res: Response) => {
       });
     }
 
+    // Ensure committee_id is treated as string | null
+    const committee_id: string | null = link.committee_id
+      ? String(link.committee_id)
+      : null;
+
     // Check read permission
-    const allowed = canRead(member, link.committee_id);
+    const allowed = canRead(member, committee_id);
+
     if (!allowed) {
       return res.status(403).json({
         status: 'error',
