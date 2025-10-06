@@ -7,5 +7,7 @@ const router: Router = express.Router();
 router.post('/create', authMiddleware, adminController.createLink);
 router.get('/links', authMiddleware, adminController.getAllLinks);
 router.get('/link/:id', authMiddleware, adminController.getLinkByID);
+router.put('/links/:id', authMiddleware, adminController.updateLinkByID);
+router.delete('/links/:id', authMiddleware, adminController.deleteLinkByID);
 
 export default router;

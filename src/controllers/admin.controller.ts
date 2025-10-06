@@ -199,6 +199,58 @@ const getLinkByID = async (req: Request, res: Response) => {
   }
 };
 
+// UPDATE LINK BY ID (with RBAC)
+const updateLinkByID = async (req: Request, res: Response) => {
+  try {
+    const member = req.member as MemberPayload;
+
+    if (!member) {
+      return res.status(401).json({
+        status: 'error',
+        message: '[ERROR] Unauthorized — no member found in request',
+      });
+    }
+
+    const link = await linkModel.findById(req.params.id);
+
+    if (!link) {
+      return res.status(404).json({
+        status: 'error',
+        message: '[ERROR] Link not found',
+      });
+    }
+
+    if (!canModify(member, link)) {
+      return res.status(403).json({
+        status: 'error',
+        message: '[ERROR] You do not have permission to edit this link',
+      });
+    }
+
+    const { shortLink, longLink } = req.body;
+
+    link.shortLink = shortLink || link.shortLink;
+    link.longLink = longLink || link.longLink;
+    link.created_at = req.body.created_at || link.created_at;
+
+    const savedLink = await link.save();
+
+    return res.status(200).json({
+      status: 'ok',
+      link: savedLink,
+    });
+  } catch (error) {
+    console.error('[ERROR] Update Link:', error);
+    return res.status(500).json({
+      status: 'error',
+      message: `[ERROR] Internal Server Error - ${
+        error instanceof Error ? error.message : error
+      }`,
+    });
+  }
+};
+
+// DELETE LINK BY ID (with RBAC)
 const deleteLinkByID = async (req: Request, res: Response) => {
   try {
     const member = req.member as MemberPayload;
@@ -241,4 +293,4 @@ const deleteLinkByID = async (req: Request, res: Response) => {
   }
 };
 
-export { createLink, getAllLinks, getLinkByID };
+export { createLink, getAllLinks, getLinkByID, updateLinkByID, deleteLinkByID };
