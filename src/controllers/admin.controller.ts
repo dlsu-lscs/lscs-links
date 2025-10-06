@@ -2,6 +2,17 @@ import { Request, Response } from 'express';
 import linkModel from '../models/link.model';
 import { canRead } from '../lib/permissions';
 
+const getAllLinks = async (req: Request, res: Response) => {
+  try {
+  } catch (error) {
+    console.error('[ERROR] Get All Links:', error);
+    return res.status(500).json({
+      status: 'error',
+      message: `[ERROR] Internal Server Error - ${error instanceof Error ? error.message : error}`,
+    });
+  }
+};
+
 const getLinkByID = async (req: Request, res: Response) => {
   try {
     const member = req.member;
@@ -42,7 +53,7 @@ const getLinkByID = async (req: Request, res: Response) => {
       link,
     });
   } catch (error) {
-    console.error('[ERROR] getLinkByID:', error);
+    console.error('[ERROR] Get Link By ID:', error);
     return res.status(500).json({
       status: 'error',
       message: `[ERROR] Internal Server Error - ${error instanceof Error ? error.message : error}`,
@@ -50,4 +61,4 @@ const getLinkByID = async (req: Request, res: Response) => {
   }
 };
 
-export { getLinkByID };
+export { getAllLinks, getLinkByID };

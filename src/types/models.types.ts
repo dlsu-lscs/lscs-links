@@ -12,6 +12,7 @@ export interface ILink extends Document {
   longLink: string;
   created_at: Date;
   created_by: string;
+  pinned: boolean;
 }
 
 // ANALYTICS
