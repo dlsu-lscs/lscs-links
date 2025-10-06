@@ -1,9 +1,57 @@
 import { Request, Response } from 'express';
 import linkModel from '../models/link.model';
 import { canRead } from '../lib/permissions';
+import { MemberPayload } from '../types/models.types';
 
 const getAllLinks = async (req: Request, res: Response) => {
   try {
+    const member = req.member as MemberPayload;
+
+    if (!member) {
+      return res.status(401).json({
+        status: 'error',
+        message: '[ERROR] Unauthorized — no member found in request',
+      });
+    }
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    let query: Record<string, any> = {};
+
+    //RBAC:
+    // EVP and PRES → can view all committees' links (except personal)
+    if (
+      ['Executive Vice President', 'President'].includes(member.position_name)
+    ) {
+      query = { committee_id: { $ne: null } };
+    } else {
+      // Regular members and VPs → only their committee + personal
+      query = {
+        $or: [
+          { committee_id: member.committee_id },
+          { created_by: member.email, committee_id: null }, // their personal links
+        ],
+      };
+    }
+
+    // pinned first, then newest first
+    const links = await linkModel
+      .find(query)
+      .sort({ pinned: -1, created_at: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalLinks = await linkModel.countDocuments(query);
+
+    return res.status(200).json({
+      status: 'ok',
+      total: totalLinks,
+      page,
+      totalPages: Math.ceil(totalLinks / limit),
+      data: links,
+    });
   } catch (error) {
     console.error('[ERROR] Get All Links:', error);
     return res.status(500).json({
@@ -15,7 +63,7 @@ const getAllLinks = async (req: Request, res: Response) => {
 
 const getLinkByID = async (req: Request, res: Response) => {
   try {
-    const member = req.member;
+    const member = req.member as MemberPayload;
 
     if (!member) {
       return res.status(401).json({
