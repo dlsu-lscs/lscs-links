@@ -2,11 +2,20 @@ import mongoose, { Schema } from 'mongoose';
 import { ILink } from '../types/models.types';
 
 const linkSchema: Schema<ILink> = new Schema({
-  shortLink: { type: String, required: true, unique: true },
-  committee_id: { type: String, default: null },
-  longLink: { type: String, required: true },
+  shortLink: {
+    type: String,
+    required: true,
+    unique: true,
+    maxlength: [100, 'Short link cannot exceed 100 characters'],
+  },
+  committee_id: { type: String, default: null, max_length: 100 },
+  longLink: {
+    type: String,
+    required: true,
+    maxlength: [2500, 'Long link cannot exceed 2500 characters'],
+  },
   created_at: { type: Date, default: Date.now },
-  created_by: { type: String, required: true },
+  created_by: { type: String, required: true, max_length: 100 },
   pinned: {
     type: Boolean,
     default: false,

@@ -27,6 +27,21 @@ const createLink = async (req: Request, res: Response) => {
       committee_id?: string | null;
     };
 
+    // Enforce Max Length
+    if (shortLink.length > 100) {
+      return res.status(400).json({
+        status: 'error',
+        message: '[ERROR] Short link cannot exceed 100 characters',
+      });
+    }
+
+    if (longLink.length > 2500) {
+      return res.status(400).json({
+        status: 'error',
+        message: '[ERROR] Long link cannot exceed 2500 characters',
+      });
+    }
+
     // RBAC: Only VP, EVP, PRES can pin
     if (
       pinned &&
@@ -199,7 +214,7 @@ const getLinkByID = async (req: Request, res: Response) => {
   }
 };
 
-// UPDATE LINK BY ID (with RBAC)
+// UPDATE LINK BY ID (with RBAC + pinned + max length)
 const updateLinkByID = async (req: Request, res: Response) => {
   try {
     const member = req.member as MemberPayload;
@@ -227,10 +242,68 @@ const updateLinkByID = async (req: Request, res: Response) => {
       });
     }
 
-    const { shortLink, longLink } = req.body;
+    const { shortLink, longLink, pinned, committee_id } = req.body;
 
+    // Enforce max length
+    if (shortLink && shortLink.length > 100) {
+      return res.status(400).json({
+        status: 'error',
+        message: '[ERROR] Short link cannot exceed 100 characters',
+      });
+    }
+    if (longLink && longLink.length > 2500) {
+      return res.status(400).json({
+        status: 'error',
+        message: '[ERROR] Long link cannot exceed 2500 characters',
+      });
+    }
+
+    // RBAC: Only VP, EVP, PRES can set pinned links
+    if (
+      pinned !== undefined &&
+      pinned === true &&
+      !['Vice President', 'Executive Vice President', 'President'].includes(
+        member.position_name,
+      )
+    ) {
+      return res.status(403).json({
+        status: 'error',
+        message: '[ERROR] Only VP, EVP, or PRES can set pinned links',
+      });
+    }
+
+    // Determine final committee_id based on position
+    let finalCommitteeId: string | null = null;
+
+    if (
+      ['Executive Vice President', 'President'].includes(member.position_name)
+    ) {
+      // EVP/PRES can assign any committee_id or null
+      finalCommitteeId = committee_id ?? link.committee_id ?? null;
+    } else if (
+      member.position_name === 'Vice President' ||
+      member.position_name === 'Associate Vice President'
+    ) {
+      // VP/AVP → assigned committee only
+      finalCommitteeId = member.committee_id ?? null;
+    } else {
+      // Regular members → personal links only
+      finalCommitteeId = null;
+    }
+
+    // Constraint: Pinned links must have a valid committee_id
+    if (pinned === true && !finalCommitteeId) {
+      return res.status(400).json({
+        status: 'error',
+        message: '[ERROR] Pinned links must have a valid committee_id',
+      });
+    }
+
+    // Update fields
     link.shortLink = shortLink || link.shortLink;
     link.longLink = longLink || link.longLink;
+    link.pinned = pinned !== undefined ? pinned : link.pinned;
+    link.committee_id = finalCommitteeId;
     link.created_at = req.body.created_at || link.created_at;
 
     const savedLink = await link.save();
@@ -243,9 +316,7 @@ const updateLinkByID = async (req: Request, res: Response) => {
     console.error('[ERROR] Update Link:', error);
     return res.status(500).json({
       status: 'error',
-      message: `[ERROR] Internal Server Error - ${
-        error instanceof Error ? error.message : error
-      }`,
+      message: `[ERROR] Internal Server Error - ${error instanceof Error ? error.message : error}`,
     });
   }
 };
