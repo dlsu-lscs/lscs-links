@@ -22,4 +22,4 @@ const getShortLinksAnalytics = async (req: Request, res: Response) => {
   }
 };
 
-export default getShortLinksAnalytics;
+export { getShortLinksAnalytics };
