@@ -28,6 +28,6 @@ const linkSchema: Schema<ILink> = new Schema({
   },
 });
 
-const linkModel = mongoose.model<ILink>('Link', linkSchema);
+const linkModel = mongoose.model<ILink>('shortlinks', linkSchema);
 
 export default linkModel;

@@ -7,6 +7,6 @@ const analyticsSchema: Schema<IAnalytics> = new Schema({
   accessed_at: { type: Date, default: Date.now },
 });
 
-const analyticsModel = mongoose.model<IAnalytics>('Analytics', analyticsSchema);
+const analyticsModel = mongoose.model<IAnalytics>('analytics', analyticsSchema);
 
 export default analyticsModel;
