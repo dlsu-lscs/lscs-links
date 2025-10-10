@@ -26,7 +26,7 @@ const createLink = async (req: Request, res: Response) => {
     // RBAC: Only VP, EVP, PRES can pin
     if (
       pinned &&
-      !['Vice President', 'Executive Vice President', 'President'].includes(
+      !['VP', 'EVP', 'PRES'].includes(
         member.position_name,
       )
     ) {
@@ -40,13 +40,13 @@ const createLink = async (req: Request, res: Response) => {
     let finalCommitteeId: string | null = null;
 
     if (
-      ['Executive Vice President', 'President'].includes(member.position_name)
+      ['EVP', 'PRES'].includes(member.position_name)
     ) {
       // EVP/PRES can assign any committee_id or null for personal links
       finalCommitteeId = committee_id ?? null;
     } else if (
-      member.position_name === 'Vice President' ||
-      member.position_name === 'Associate Vice President'
+      member.position_name === 'VP' ||
+      member.position_name === 'AVP'
     ) {
       // VP and AVP → assigned committee only
       finalCommitteeId = member.committee_id ?? null;
@@ -108,7 +108,7 @@ const getAllLinks = async (req: Request, res: Response) => {
     //RBAC:
     // EVP and PRES → can view all committees' links (except personal)
     if (
-      ['Executive Vice President', 'President'].includes(member.position_name)
+      ['EVP', 'PRES'].includes(member.position_name)
     ) {
       query = { committee_id: { $ne: null } };
     } else {
@@ -230,7 +230,7 @@ const updateLinkByID = async (req: Request, res: Response) => {
     if (
       pinned !== undefined &&
       pinned === true &&
-      !['Vice President', 'Executive Vice President', 'President'].includes(
+      !['VP', 'EVP', 'PRES'].includes(
         member.position_name,
       )
     ) {
@@ -244,13 +244,13 @@ const updateLinkByID = async (req: Request, res: Response) => {
     let finalCommitteeId: string | null = null;
 
     if (
-      ['Executive Vice President', 'President'].includes(member.position_name)
+      ['EVP', 'PRES'].includes(member.position_name)
     ) {
       // EVP/PRES can assign any committee_id or null
       finalCommitteeId = committee_id ?? link.committee_id ?? null;
     } else if (
-      member.position_name === 'Vice President' ||
-      member.position_name === 'Associate Vice President'
+      member.position_name === 'VP' ||
+      member.position_name === 'AVP'
     ) {
       // VP/AVP → assigned committee only
       finalCommitteeId = member.committee_id ?? null;
