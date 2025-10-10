@@ -15,6 +15,13 @@ export interface ILink extends Document {
   pinned: boolean;
 }
 
+export interface CreateLinksRequest {
+  shortlink: string; 
+  longlink: string; 
+  pinned?: boolean;
+  committee_id?: string | null;
+}
+
 // ANALYTICS
 export interface IAnalytics extends Document {
   link: String;

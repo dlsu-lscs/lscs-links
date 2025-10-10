@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import linkModel from '../models/link.model';
 import { canModify, canRead } from '../lib/permissions';
-import { MemberPayload } from '../types/models.types';
+import { CreateLinksRequest, MemberPayload } from '../types/models.types';
 
 //CREATE LINK (with RBAC and pinned links)
 const createLink = async (req: Request, res: Response) => {
@@ -20,12 +20,7 @@ const createLink = async (req: Request, res: Response) => {
       longlink,
       pinned = false,
       committee_id,
-    } = req.body as {
-      shortlink: string;
-      longlink: string;
-      pinned?: boolean;
-      committee_id?: string | null;
-    };
+    } = req.body as CreateLinksRequest; 
 
     // Enforce Max Length
     if (shortlink.length > 100) {
