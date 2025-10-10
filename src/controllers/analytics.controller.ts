@@ -12,7 +12,6 @@ const getShortLinksAnalytics = async (req: Request, res: Response) => {
       query.type = req.query.type as string;
     }
 
-    console.log('[QUERY] ', query);
     const result = await analyticsModel.find(query).exec();
     res.send({ status: 'ok', count: result });
   } catch (error) {
