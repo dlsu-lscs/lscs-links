@@ -22,20 +22,6 @@ const createLink = async (req: Request, res: Response) => {
       committee_id,
     } = req.body as CreateLinksRequest; 
 
-    // Enforce Max Length
-    if (shortlink.length > 100) {
-      return res.status(400).json({
-        status: 'error',
-        message: '[ERROR] Short link cannot exceed 100 characters',
-      });
-    }
-
-    if (longlink.length > 2500) {
-      return res.status(400).json({
-        status: 'error',
-        message: '[ERROR] Long link cannot exceed 2500 characters',
-      });
-    }
 
     // RBAC: Only VP, EVP, PRES can pin
     if (
@@ -239,19 +225,6 @@ const updateLinkByID = async (req: Request, res: Response) => {
 
     const { shortlink, longlink, pinned, committee_id } = req.body;
 
-    // Enforce max length
-    if (shortlink && shortlink.length > 100) {
-      return res.status(400).json({
-        status: 'error',
-        message: '[ERROR] Short link cannot exceed 100 characters',
-      });
-    }
-    if (longlink && longlink.length > 2500) {
-      return res.status(400).json({
-        status: 'error',
-        message: '[ERROR] Long link cannot exceed 2500 characters',
-      });
-    }
 
     // RBAC: Only VP, EVP, PRES can set pinned links
     if (
