@@ -5,6 +5,8 @@ import adminRoutes from './routes/admin.routes';
 import linksRoutes from './routes/links.routes';
 import analyticsRoutes from './routes/analytics.routes';
 import userRoutes from './routes/user.routes';
+import connectDB from './config/db';
+import config from './config/config';
 
 const app = express();
 
@@ -16,4 +18,9 @@ app.use('/', linksRoutes);
 app.use('/analytics', analyticsRoutes);
 app.use('/login', userRoutes);
 
-export default app;
+connectDB();
+
+app.listen(config.port, () => {
+  console.log(`Server running on port ${config.port}`);
+});
+
