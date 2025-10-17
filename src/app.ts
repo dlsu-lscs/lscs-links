@@ -16,7 +16,7 @@ app.use(express.json());
 app.use('/admin', adminRoutes);
 app.use('/', linksRoutes);
 app.use('/analytics', analyticsRoutes);
-app.use('/login', userRoutes);
+app.use('/auth', userRoutes);
 
 connectDB();
 
