@@ -62,7 +62,7 @@ const userLogin = async (req: Request, res: Response) => {
         sub: googleResponse.data.user_id,
         committee_id: memberData.committee_id,
         committee_name: memberData.committee_name,
-        position_name: memberData.position_name,
+        position_id: memberData.position_id,
       },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' },

@@ -6,8 +6,8 @@ export const canRead = (
   committee_id: string | null,
 ): boolean => {
   if (
-    ['Executive Vice President', 'President'].includes(
-      member.position_name as string,
+    ['EVP', 'PRES'].includes(
+      member.position_id as string,
     )
   )
     return true;
@@ -19,14 +19,14 @@ export const canModify = (
   member: MemberPayload,
   link: Document & { created_by: string; committee_id: string | null },
 ): boolean => {
-  const { position_name, email, committee_id } = member;
+  const { position_id, email, committee_id } = member;
 
   // EVP and PRES → can edit/delete any
-  if (['Executive Vice President', 'President'].includes(position_name))
+  if (['EVP', 'PRES'].includes(position_id))
     return true;
 
   // VP → can edit/delete within their own committee
-  if (position_name === 'Vice President' && link.committee_id === committee_id)
+  if (position_id === 'VP' && link.committee_id === committee_id)
     return true;
 
   // Regular members can only modify their own link

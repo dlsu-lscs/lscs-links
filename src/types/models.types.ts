@@ -39,5 +39,5 @@ export interface AnalyticsType {
 export interface MemberPayload extends JwtPayload {
   email: string;
   committee_id?: string | null;
-  position_name: string;
+  position_id: string;
 }
