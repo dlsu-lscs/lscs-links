@@ -20,7 +20,7 @@ const createLink = async (req: Request, res: Response) => {
       longlink,
       pinned = false,
       committee_id,
-    } = req.body as CreateLinksRequest; 
+    } = req.body as CreateLinksRequest;
 
 
     // RBAC: Only VP, EVP, PRES can pin
@@ -272,7 +272,19 @@ const updateLinkByID = async (req: Request, res: Response) => {
     link.longlink = longlink || link.longlink;
     link.pinned = pinned !== undefined ? pinned : link.pinned;
     link.committee_id = finalCommitteeId;
-    link.created_at = req.body.created_at || link.created_at;
+
+    if (req.body.created_at) {
+      const newDate = new Date(req.body.created_at);
+    if (isNaN(newDate.getTime())) {
+      return res.status(400).json({
+        status: 'error',
+        message: '[ERROR] Invalid created_at date',
+      });
+    }
+      link.created_at = newDate;
+    }
+
+
 
     const savedLink = await link.save();
 
