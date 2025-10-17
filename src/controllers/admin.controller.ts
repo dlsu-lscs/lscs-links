@@ -49,7 +49,7 @@ const createLink = async (req: Request, res: Response) => {
       member.position_id === 'AVP'
     ) {
       // VP and AVP → assigned committee only
-      finalCommitteeId = member.committee_id ?? null;
+      finalCommitteeId = null;
     } else {
       // Regular members → personal links only
       finalCommitteeId = null;
