@@ -63,6 +63,7 @@ const userLogin = async (req: Request, res: Response) => {
         committee_id: memberData.committee_id,
         committee_name: memberData.committee_name,
         position_id: memberData.position_id,
+        position_name: memberData.position_name,
       },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' },
