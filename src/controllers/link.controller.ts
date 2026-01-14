@@ -4,8 +4,7 @@ import LinkModel from '../models/link.model';
 import analyticsMiddleware from '../middlewares/analytics.middleware';
 
 const getShortLink = async (req: Request, res: Response) => {
-  let { shortlink } = req.params;
-  shortlink = (shortlink || '').trim();
+  const shortlink = ((req.params.shortlink as string) || '').trim();
 
   if (!shortlink || shortlink === 'favicon.ico') {
     return res.status(204).end();

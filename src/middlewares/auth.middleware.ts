@@ -2,13 +2,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { MemberPayload } from '../types/models.types';
 
-// Extend Express Request type so `req.member` is allowed
-declare module 'express-serve-static-core' {
-  interface Request {
-    member?: MemberPayload;
-  }
-}
-
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // "Bearer <token>"
