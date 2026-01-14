@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const connectDB = async () => {
   try {
     await mongoose.connect(
-      process.env.MONGO_URI || 'mongodb://localhost:27017/links-local',
+      process.env.DB_URL || 'mongodb://localhost:27017/links-local',
     );
     console.log(`MongoDB connected ${mongoose.connection.host}`);
   } catch (error) {

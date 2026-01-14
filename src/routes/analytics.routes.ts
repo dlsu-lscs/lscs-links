@@ -4,6 +4,11 @@ import * as analyticsController from '../controllers/analytics.controller';
 
 const router: Router = express.Router();
 
+router.use((req, res, next) => {
+  console.log(`[Analytics Route] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 router.get(
   '/:shortLink',
   authMiddleware,
