@@ -1,4 +1,11 @@
-# LSCS Links API Documentation
+# LSCS Links API
+
+> [!IMPORTANT]
+> LSCS Core API and LSCS Links DB (mongodb) is required to run this API properly
+
+For future maintainers, make sure to run LSCS Core (with its API) first and get an LSCS_API_KEY token there for authenticating DLSU google accounts, as the LSCS Core service holds the member data. (as of 2026-01-15 12:20 AM)
+
+---
 
 This document explains how to use all available routes, how they relate to one another, and the data models used by the API.
 
@@ -37,6 +44,7 @@ RBAC (role-based access control) is enforced in two places and now uses `positio
 ### Auth
 
 POST /auth/login
+
 - Body: `{ "token": string }` where `token` is a Google OAuth access token
 - Flow:
   1. Validates token against Google Tokeninfo
@@ -49,6 +57,7 @@ POST /auth/login
   - `GOOGLE_CLIENT_ID`, `LSCS_API_KEY`, `JWT_SECRET`
 
 Decoded JWT payload (as issued):
+
 - `email: string`
 - `sub: string` (Google user id)
 - `committee_id?: string | null`
@@ -60,6 +69,7 @@ Decoded JWT payload (as issued):
 ### Admin (Authenticated)
 
 POST /admin/create
+
 - Purpose: Create a shortlink
 - Auth: required
 - Body (CreateLinksRequest):
@@ -78,6 +88,7 @@ POST /admin/create
   - 201: `{ status: 'ok', link: Link }`
 
 GET /admin/links
+
 - Purpose: List links with RBAC filtering and pagination
 - Auth: required
 - Query: `page?: number = 1`, `limit?: number = 10`
@@ -89,14 +100,16 @@ GET /admin/links
   - 200: `{ status: 'ok', total, page, totalPages, data: Link[] }`
 
 GET /admin/link/:id
+
 - Purpose: Read a single link by ID
 - Auth: required
 - RBAC: Uses `canRead(member, committee_id)`
 - Response:
   - 200: `{ status: 'ok', link: Link }`
- - Note: Because `canRead` checks only committee match (or `EVP`/`PRES`), personal links (`committee_id = null`) may not be readable by their creator unless their `committee_id` is also `null`. They are still visible in `GET /admin/links` for the creator.
+- Note: Because `canRead` checks only committee match (or `EVP`/`PRES`), personal links (`committee_id = null`) may not be readable by their creator unless their `committee_id` is also `null`. They are still visible in `GET /admin/links` for the creator.
 
 PUT /admin/links/:id
+
 - Purpose: Update a link
 - Auth: required
 - Body (partial): `{ shortlink?, longlink?, pinned?, committee_id?, created_at? }`
@@ -109,6 +122,7 @@ PUT /admin/links/:id
   - 200: `{ status: 'ok', link: Link }`
 
 DELETE /admin/links/:id
+
 - Purpose: Delete a link
 - Auth: required
 - RBAC: Uses `canModify(member, link)`
@@ -120,6 +134,7 @@ DELETE /admin/links/:id
 ### Public redirects
 
 GET /:shortlink
+
 - Purpose: Resolve and redirect a shortlink
 - Auth: not required (public)
 - Behavior:
@@ -130,6 +145,7 @@ GET /:shortlink
   - On error: serves `public/error.html`
 
 Analytics captured on click:
+
 - Handler: `analyticsMiddleware.onClick(req.path, type)` with `type` default `'link'`
 - Stored record (see Models): `link` will be the path such as `/<shortlink>`
 
@@ -138,6 +154,7 @@ Analytics captured on click:
 ### Analytics (Authenticated)
 
 GET /analytics/:shortLink
+
 - Purpose: Fetch analytics entries for a specific shortlink
 - Auth: required
 - Query: `type?: string`
@@ -163,6 +180,7 @@ GET /analytics/:shortLink
 ## Models
 
 ### Link
+
 Source: `src/models/link.model.ts`
 
 - Fields
@@ -175,6 +193,7 @@ Source: `src/models/link.model.ts`
     - Validation: A personal link (i.e., `committee_id = null`) cannot be pinned
 
 - Example
+
 ```json
 {
   "_id": "66f...",
@@ -191,6 +210,7 @@ Source: `src/models/link.model.ts`
   - In the schema, `committee_id`/`created_by` use `max_length` instead of `maxlength` (Mongoose option). If you intend to enforce max length, rename to `maxlength`.
 
 ### Analytics
+
 Source: `src/models/analytics.model.ts`
 
 - Fields
@@ -199,6 +219,7 @@ Source: `src/models/analytics.model.ts`
   - `accessed_at: Date` (default `Date.now`)
 
 - Example
+
 ```json
 {
   "_id": "66f...",
@@ -212,6 +233,7 @@ Source: `src/models/analytics.model.ts`
   - `analyticsMiddleware.onClick` currently sets `type` to the boolean result of `(type == 'link')`. Since the schema expects a string, this will be coerced to `'true'` or `'false'`. If you want semantic values like `'link'`/`'page'`, update the middleware to pass the original string.
 
 ### MemberPayload (JWT)
+
 Source: `src/types/models.types.ts` and `src/controllers/user.controller.ts`
 
 - Shape (effective, from token issuer):
