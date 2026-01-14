@@ -1,9 +1,7 @@
 import { MemberPayload } from './models.types';
 
-declare global {
-  namespace Express {
-    interface Request {
-      member?: MemberPayload;
-    }
+declare module 'express' {
+  interface Request {
+    member?: MemberPayload;
   }
 }
